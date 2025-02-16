@@ -1,0 +1,38 @@
+name: estore
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+  saver_gallery: ^4.0.1
+  permission_handler: ^10.2.0
+  google_sign_in: ^6.0.0
+  firebase_auth: ^5.4.2
+  cloud_firestore: ^5.6.3
+  firebase_core: ^3.11.0
+  carousel_slider: ^5.0.0
+  cupertino_icons: ^1.0.8
+  image_picker: ^0.8.4+5
+  qr_flutter: ^4.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/assets/e1.png
+    - lib/assets/e2.jpg
+    - lib/assets/e3.jpeg
+    - lib/assets/apple.jpeg
+    - lib/assets/banana.jpeg
+    - lib/assets/milk.jpeg
+    - lib/assets/google.png
+    - lib/assets/broken.jpg
