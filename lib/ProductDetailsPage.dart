@@ -120,7 +120,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           widget.product["name"],
           style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF4169E1),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -488,7 +488,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           .delete();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Product deleted successfully"), backgroundColor: Colors.green),
+        const SnackBar(content: Text("Product deleted successfully"), backgroundColor: Color(0xFF4169E1)),
       );
 
       Navigator.pop(context); // Navigate back after deletion
@@ -525,7 +525,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: success ? Colors.green : Colors.red,
+        backgroundColor: success ? Color(0xFF4169E1) : Colors.red,
       ),
     );
   }

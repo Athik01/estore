@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -62,7 +63,7 @@ class _AddProductPageState extends State<AddProductPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add New Product", style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white)),
-        backgroundColor: Colors.green,
+        backgroundColor: Color(0xFF4169E1),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new,color: Colors.white,),
           onPressed: () => Navigator.pop(context),
@@ -206,7 +207,7 @@ class _AddProductPageState extends State<AddProductPage> {
                   SizedBox(height: 5,),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green[700],
+                      backgroundColor: Color(0xFF4169E1),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     ),
                     icon: const Icon(Icons.add, color: Colors.white),
@@ -222,7 +223,7 @@ class _AddProductPageState extends State<AddProductPage> {
         padding: const EdgeInsets.all(16),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
+            backgroundColor: Color(0xFF4169E1),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
@@ -276,6 +277,7 @@ class _AddProductPageState extends State<AddProductPage> {
     }
 
     Map<String, dynamic> productData = {
+      "userId": FirebaseAuth.instance.currentUser!.uid,
       "name": nameController.text.trim(),
       "type": typeController.text.trim(),
       "hasExpiryDate": hasExpiryDate,
@@ -326,14 +328,21 @@ class _AddProductPageState extends State<AddProductPage> {
         final qrCode = qrValidationResult.qrCode!;
         final qrPainter = QrPainter.withQr(
           qr: qrCode,
-          color: const Color(0xFF000000),
+          color: Colors.black, // QR code color
           gapless: true,
         );
 
-        // Render QR code to an image
+        // Render QR code to an image with a white background
         final recorder = ui.PictureRecorder();
         final canvas = Canvas(recorder);
+
+        // Draw white background
+        final paint = Paint()..color = Colors.white;
+        canvas.drawRect(const Rect.fromLTWH(0, 0, 200, 200), paint);
+
+        // Paint the QR code on top of the white background
         qrPainter.paint(canvas, const Size(200, 200));
+
         final picture = recorder.endRecording();
         final image = await picture.toImage(200, 200);
         ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -366,7 +375,7 @@ class _AddProductPageState extends State<AddProductPage> {
             ),
           ],
         ),
-        backgroundColor: isSuccess ? Colors.green : Colors.red,
+        backgroundColor: isSuccess ? Color(0xFF4169E1) : Colors.red,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
@@ -394,25 +403,25 @@ class _AddProductPageState extends State<AddProductPage> {
           decoration: InputDecoration(
             labelText: label,
             labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500), // Improved text style
-            prefixIcon: Icon(icon, color: Colors.green[700]), // Updated icon color
+            prefixIcon: Icon(icon, color: Color(0xFF4169E1)), // Updated icon color
             filled: true,
             fillColor: Colors.white, // Bright background for contrast
             contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Comfortable input spacing
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.green.shade300, width: 1.5), // Green border for a fresh look
+              borderSide: BorderSide(color: Color(0xFF4169E1), width: 1.5), // Green border for a fresh look
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.green.shade200, width: 1), // Lighter green border
+              borderSide: BorderSide(color: Color(0xFF4169E1), width: 1), // Lighter green border
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.green.shade700, width: 2), // Darker border when focused
+              borderSide: BorderSide(color: Color(0xFF4169E1), width: 2), // Darker border when focused
             ),
           ),
           dropdownColor: Colors.white, // Ensures dropdown background matches UI theme
-          icon: const Icon(Icons.arrow_drop_down, size: 30, color: Colors.green), // Enhances dropdown visibility
+          icon: const Icon(Icons.arrow_drop_down, size: 30, color: Color(0xFF4169E1)), // Enhances dropdown visibility
           items: items,
           onChanged: onChanged,
         ),

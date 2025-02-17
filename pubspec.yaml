@@ -19,11 +19,20 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: ^0.8.4+5
   qr_flutter: ^4.1.0
+  intl: ^0.20.2
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.2
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/be.png"
+  adaptive_icon_foreground: "lib/assets/be.png"
+  adaptive_icon_background: "#ffffff"
 
 flutter:
   uses-material-design: true
@@ -36,3 +45,4 @@ flutter:
     - lib/assets/milk.jpeg
     - lib/assets/google.png
     - lib/assets/broken.jpg
+    - lib/assets/be.png
