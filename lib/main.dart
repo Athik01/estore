@@ -408,18 +408,34 @@ class HomePage extends StatelessWidget {
                     itemCount: entry.value.length,
                     itemBuilder: (context, index) {
                       var sale = entry.value[index];
+
                       return Card(
                         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         child: ListTile(
                           leading: CircleAvatar(child: Text("${sale["quantitySold"]}x")),
-                          title: Text(sale["name"], style: const TextStyle(fontWeight: FontWeight.bold)),
+                          title: Text(
+                            sale["name"],
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                           subtitle: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               if (sale["hasSizeVariants"] == true)
                                 Text("Size: ${sale["size"]}", style: const TextStyle(color: Colors.grey)),
+
                               Text("Total: Rs. ${sale["totalAmount"]}", style: const TextStyle(fontWeight: FontWeight.w500)),
+
+                              // 🔥 Customer Name & Address
+                              const SizedBox(height: 4),
+                              Text(
+                                "Customer: ${sale["customerName"] ?? "Unknown"}",
+                                style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                "Address: ${sale["customerAddress"] ?? "Not provided"}",
+                                style: const TextStyle(color: Colors.grey),
+                              ),
                             ],
                           ),
                           trailing: Text(
@@ -606,6 +622,8 @@ class HomePage extends StatelessWidget {
   }
   void _sellProduct(BuildContext context, Map<String, dynamic> product) {
     TextEditingController quantityController = TextEditingController();
+    TextEditingController customerNameController = TextEditingController();
+    TextEditingController customerAddressController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
     List<dynamic> sizeVariants = product["sizeVariants"] ?? []; // Get available size variants
@@ -695,6 +713,30 @@ class HomePage extends StatelessWidget {
                     return null;
                   },
                 ),
+
+                const SizedBox(height: 10),
+
+                // Customer Name Input Field
+                TextFormField(
+                  controller: customerNameController,
+                  decoration: InputDecoration(
+                    labelText: "Customer Name",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    prefixIcon: const Icon(Icons.person),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Customer Address Input Field
+                TextFormField(
+                  controller: customerAddressController,
+                  decoration: InputDecoration(
+                    labelText: "Customer Address",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    prefixIcon: const Icon(Icons.location_on),
+                  ),
+                ),
               ],
             ),
           ),
@@ -703,14 +745,18 @@ class HomePage extends StatelessWidget {
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   int quantity = int.parse(quantityController.text);
+                  // Fetch today's date
+                  DateTime now = DateTime.now();
+                  String formattedDate = "${now.year}-${now.month}-${now.day}";
+
                   // If product has size variants, use the selected size and price
                   if (product["hasSizeVariants"] == true && selectedPrice.isNotEmpty) {
-                    await _processSale(product, quantity, selectedSize, selectedPrice);
+                    await _processSale(product, quantity, selectedSize, selectedPrice, customerNameController.text, customerAddressController.text, formattedDate);
                     Navigator.pop(context);
                   }
                   // If product has no size variants, use the default price
                   else if (product["hasSizeVariants"] == false) {
-                    await _processSale(product, quantity, null, product["price"].toString());
+                    await _processSale(product, quantity, null, product["price"].toString(), customerNameController.text, customerAddressController.text, formattedDate);
                     Navigator.pop(context);
                   } else {
                     // Handle error case where no size/price is selected
@@ -735,7 +781,7 @@ class HomePage extends StatelessWidget {
 
 
   Future<void> _processSale(
-      Map<String, dynamic> product, int quantitySold, String? selectedSize, String selectedPrice) async {
+      Map<String, dynamic> product, int quantitySold, String? selectedSize, String selectedPrice, String customerName, String customerAddress, String formattedDate) async {
     String productId = product["id"];
     List<dynamic> sizeVariants = product["sizeVariants"] ?? [];
     int price = int.tryParse(selectedPrice) ?? 0; // Convert price to int
@@ -791,10 +837,14 @@ class HomePage extends StatelessWidget {
       "hasSizeVariants": product["hasSizeVariants"] ?? false,
       "type": product["type"] ?? "Unknown",
       "timestamp": FieldValue.serverTimestamp(),
+      "customerName": customerName,
+      "customerAddress": customerAddress,
+      "saleDate": formattedDate,
     });
 
     print("Sale processed successfully!");
   }
+
 
 }
 
